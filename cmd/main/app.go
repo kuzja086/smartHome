@@ -8,22 +8,28 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 
-	"smartHome/internal/delivery/http/v1/auth"
+	"smartHome/internal/transport/http/v1/auth"
+	"smartHome/pkg/logging"
 )
 
 func main() {
+	logger := logging.GetLogger()
+	logger.Info("create logger")
 	router := httprouter.New()
 	// TODO Вынести отдельно
 	router.GET("/ping", Ping)
 
-	authHandler := auth.Handler{}
+	logger.Info("register handlers")
+	authHandler := auth.NewAuthHandler(logger)
 	authHandler.Register(router)
 
+	logger.Info("create listener")
 	listener, err := net.Listen("tcp", "127.0.0.1:2607")
 	if err != nil {
 		panic(err.Error())
 	}
 
+	logger.Info("start server")
 	server := &http.Server{
 		Handler:      router,
 		WriteTimeout: 15 * time.Second,
