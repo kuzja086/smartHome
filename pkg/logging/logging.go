@@ -1,6 +1,7 @@
 package logging
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -9,6 +10,8 @@ import (
 
 	"github.com/sirupsen/logrus"
 )
+
+const logPath = "logs"
 
 type writerHook struct {
 	Writer    []io.Writer
@@ -38,8 +41,8 @@ type Logger struct {
 	*logrus.Entry
 }
 
-func GetLogger() Logger {
-	return Logger{e}
+func GetLogger() *Logger {
+	return &Logger{e}
 }
 
 func init() {
@@ -54,9 +57,11 @@ func init() {
 		FullTimestamp: true,
 	}
 
-	err := os.Mkdir("logs", 0644)
-	if err != nil {
-		panic(err)
+	if _, err := os.Stat(logPath); errors.Is(err, os.ErrNotExist) {
+		err := os.Mkdir(logPath, 0644)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	allfile, err := os.OpenFile("logs/all.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0640)
