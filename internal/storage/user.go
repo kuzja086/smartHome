@@ -3,7 +3,7 @@ package storage
 import (
 	"context"
 
-	"smartHome/internal/entity/user"
+	"smartHome/internal/entity"
 )
 
 type UserStorage interface {

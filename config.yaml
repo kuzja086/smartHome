@@ -2,3 +2,7 @@ is_debug: true
 app:
   host: localhost
   port: 50194
+mongodb:
+  host: localhost
+  port: 50195
+  database: UserService
