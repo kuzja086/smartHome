@@ -10,8 +10,9 @@ import (
 	"github.com/julienschmidt/httprouter"
 
 	"smartHome/internal/config"
+	"smartHome/internal/service"
 	mongodbStorage "smartHome/internal/storage/db/mongodb"
-	"smartHome/internal/transport/http/v1/auth"
+	v1user "smartHome/internal/transport/http/v1"
 	"smartHome/pkg/client/mongodb"
 	"smartHome/pkg/logging"
 )
@@ -27,11 +28,16 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	storage := mongodbStorage.NewStorage(mongoDBClient, cfg.MongoDB.Collection, logger)
+
+	logger.Info("register ping")
+	storage := mongodbStorage.NewUserStorage(mongoDBClient, cfg.MongoDB.Collection, logger)
 	router.GET("/ping", func(w http.ResponseWriter, r *http.Request, p httprouter.Params) { w.Write([]byte("it's work!")) })
 
+	logger.Info("register servisec")
+	userService := service.NewUserService(logger, storage)
+
 	logger.Info("register handlers")
-	authHandler := auth.NewAuthHandler(logger)
+	authHandler := v1user.NewUserHandler(logger, userService)
 	authHandler.Register(router)
 
 	logger.Info("create listener")

@@ -2,7 +2,7 @@ package mongodbStorage
 
 import (
 	"context"
-	user "smartHome/internal/entity"
+	"smartHome/internal/entity"
 	"smartHome/pkg/logging"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -15,14 +15,14 @@ type UserStorage struct {
 	logger     *logging.Logger
 }
 
-func NewAuthorStorage(database *mongo.Database, collection string, logger *logging.Logger) *UserStorage {
+func NewUserStorage(database *mongo.Database, collection string, logger *logging.Logger) *UserStorage {
 	return &UserStorage{
 		collection: database.Collection(collection),
 		logger:     logger,
 	}
 }
 
-func (d *UserStorage) CreateUser(ctx context.Context, user user.User) (string, error) {
+func (d *UserStorage) CreateUser(ctx context.Context, user entity.User) (string, error) {
 	d.logger.Debug("create user")
 	result, err := d.collection.InsertOne(ctx, user)
 	if err != nil {
@@ -38,7 +38,7 @@ func (d *UserStorage) CreateUser(ctx context.Context, user user.User) (string, e
 	return "", err
 }
 
-func (d *UserStorage) FindOne(ctx context.Context, id string) (u user.User, err error) {
+func (d *UserStorage) FindOne(ctx context.Context, id string) (u entity.User, err error) {
 	oid, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		d.logger.Debugf("HEX: %s", id)
