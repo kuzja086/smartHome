@@ -1,0 +1,44 @@
+{
+	"info": {
+		"_postman_id": "e3c2baea-5f5a-448c-b155-cbeb77380cf0",
+		"name": "SmartHome",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18252398"
+	},
+	"item": [
+		{
+			"name": "ping",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "CreateUser",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Username\" :\"\",\r\n\t\"Email\" : \"1\",\r\n\t\"Password\" :\"1\",\r\n\t\"RepeatPassword\" : \"1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}auth/signup",
+					"host": [
+						"{{host}}auth"
+					],
+					"path": [
+						"signup"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

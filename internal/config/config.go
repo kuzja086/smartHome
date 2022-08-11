@@ -14,8 +14,8 @@ type Config struct {
 		Port int    `yaml:"port" env:"SHPort" env-default:"50194"`
 	}
 	MongoDB struct {
-		Host       string `yaml:"host" env:"SHHostMDB" env-default:"localhost"`
-		Port       string `yaml:"port" env:"SHPortMDB" env-default:"50195"`
+		HostMDB    string `yaml:"hostmdb" env:"SHHostMDB" env-default:"localhost"`
+		PortMDB    string `yaml:"portmdb" env:"SHPortMDB" env-default:"50195"`
 		Database   string `yaml:"database" env:"SHdatabaseMDB" env-default:"userservice"`
 		AuthDB     string `yaml:"host" env:"SHAuthDBMDB"`
 		Collection string `yaml:"collection" env:"SHCollectionMDB" env-default:"users"`

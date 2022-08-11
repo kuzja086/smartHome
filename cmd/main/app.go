@@ -24,13 +24,16 @@ func main() {
 
 	cfg := config.GetConfig()
 
-	mongoDBClient, err := mongodb.NewClient(context.Background(), cfg.MongoDB.Host, cfg.MongoDB.Port, cfg.MongoDB.Username, cfg.MongoDB.Password, cfg.MongoDB.Database, cfg.MongoDB.AuthDB)
+	logger.Info("create mongoDB client")
+	mongoDBClient, err := mongodb.NewClient(context.Background(), cfg.MongoDB.HostMDB, cfg.MongoDB.PortMDB, cfg.MongoDB.Username, cfg.MongoDB.Password, cfg.MongoDB.Database, cfg.MongoDB.AuthDB)
 	if err != nil {
 		panic(err)
 	}
 
-	logger.Info("register ping")
+	logger.Info("storage init")
 	storage := mongodbStorage.NewUserStorage(mongoDBClient, cfg.MongoDB.Collection, logger)
+
+	logger.Info("register ping")
 	router.GET("/ping", func(w http.ResponseWriter, r *http.Request, p httprouter.Params) { w.Write([]byte("it's work!")) })
 
 	logger.Info("register servisec")
