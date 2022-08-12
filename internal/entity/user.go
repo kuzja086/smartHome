@@ -1,7 +1,7 @@
 package entity
 
 import (
-	"fmt"
+	"smartHome/internal/apperror"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -23,7 +23,7 @@ type CreateUserDTO struct {
 func NewUser(dto CreateUserDTO) (u User, err error) {
 	pwd, err := generatePasswordHash(dto.Password)
 	if err != nil {
-		return u, fmt.Errorf("%v", err)
+		return u, err
 	}
 
 	return User{
@@ -36,7 +36,7 @@ func NewUser(dto CreateUserDTO) (u User, err error) {
 func generatePasswordHash(password string) (string, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
 	if err != nil {
-		return "", fmt.Errorf("failed to hash password due to error %w", err)
+		return "", apperror.NewAppError("failed to hash", "failed to hash password due to error", apperror.HashGen, err)
 	}
 	return string(hash), nil
 }

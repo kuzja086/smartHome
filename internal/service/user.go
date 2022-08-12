@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"smartHome/internal/entity"
 	"smartHome/internal/storage"
@@ -22,17 +21,12 @@ func NewUserService(logger *logging.Logger, storage storage.UserStorage) *UserSe
 }
 
 func (u *UserService) CreateUser(ctx context.Context, dto entity.CreateUserDTO) (id string, err error) {
-	u.logger.Debug("check password and repeat password")
-	if dto.Password != dto.RepeatPassword {
-		return id, errors.New("reapeat pass")
-	}
-
 	u.logger.Debug("generate password hash")
 	user, err := entity.NewUser(dto)
 
 	if err != nil {
 		u.logger.Errorf("failed to create user due to error %v", err)
-		return
+		return id, err
 	}
 
 	//TODO поиск по логину и паролю:
@@ -47,4 +41,9 @@ func (u *UserService) CreateUser(ctx context.Context, dto entity.CreateUserDTO) 
 	}
 
 	return id, nil
+}
+
+func (u *UserService) FindByUsername(ctx context.Context, username string) (user entity.User, err error) {
+	// TODO
+	return user, nil
 }
