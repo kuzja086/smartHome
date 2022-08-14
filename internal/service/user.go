@@ -2,7 +2,8 @@ package service
 
 import (
 	"context"
-	"fmt"
+	"errors"
+	"smartHome/internal/apperror"
 	"smartHome/internal/entity"
 	"smartHome/internal/storage"
 	"smartHome/pkg/logging"
@@ -21,23 +22,26 @@ func NewUserService(logger *logging.Logger, storage storage.UserStorage) *UserSe
 }
 
 func (u *UserService) CreateUser(ctx context.Context, dto entity.CreateUserDTO) (id string, err error) {
-	u.logger.Debug("generate password hash")
 	user, err := entity.NewUser(dto)
-
 	if err != nil {
 		u.logger.Errorf("failed to create user due to error %v", err)
 		return id, err
 	}
 
-	//TODO поиск по логину и паролю:
+	u.logger.Debug("Check user exists")
+	_, err = u.storage.FindByUsername(ctx, user.Username)
+	if err == nil {
+		return id, apperror.UserExists
+	} else if !errors.Is(err, apperror.UserNotFound) {
+		return id, apperror.NewAppError("error with db", "", apperror.InternalError, err)
+	}
+
+	u.logger.Debug("generate password hash")
 
 	id, err = u.storage.CreateUser(ctx, user)
 
 	if err != nil {
-		// if errors.Is(err, apperror.ErrNotFound) {
-		// 	return id, err
-		// }
-		return id, fmt.Errorf("failed to create user. error: %w", err)
+		return id, apperror.NewAppError("error create user", "", apperror.ErrorCreateUser, err)
 	}
 
 	return id, nil

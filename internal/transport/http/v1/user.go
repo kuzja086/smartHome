@@ -41,7 +41,7 @@ func (h *UserHandler) SignUp(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	h.logger.Debug("Validate DTO")
-	err := validateRequest(d, h.logger)
+	err := h.validateRequest(d, h.logger)
 	if err != nil {
 		return err
 	}
@@ -67,15 +67,19 @@ func (h *UserHandler) SignIn(w http.ResponseWriter, r *http.Request) error {
 	return apperror.NewAppError("", "", "", nil)
 }
 
-func validateRequest(req httpdto.CreateUserDTO, l *logging.Logger) error {
+func (h *UserHandler) validateRequest(req httpdto.CreateUserDTO, l *logging.Logger) error {
 	l.Debug("check password and confirm password")
 	if req.Password != req.RepeatPassword {
 		l.Info("reapeat pass wrong")
 		return apperror.NotConfirmPass
 	}
+	if req.Password == "" {
+		l.Info("empty password")
+		return apperror.EmptyPassword
+	}
 
 	if req.Username == "" {
-		l.Info("Empty username")
+		l.Info("empty username")
 		return apperror.EmptyUsername
 	}
 	return nil

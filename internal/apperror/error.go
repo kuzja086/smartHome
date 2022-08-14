@@ -10,15 +10,22 @@ type AppError struct {
 }
 
 const (
-	internalError   = "US-000"
+	InternalError   = "US-000"
 	notConfirmPassc = "US-001"
 	emptyUsername   = "US-002"
-	HashGen         = "US-003"
+	emptyPassword   = "US-003"
+	HashGen         = "US-004"
+	userNotFound    = "US-005"
+	userExists      = "US-006"
+	ErrorCreateUser = "US-007"
 )
 
 var (
 	NotConfirmPass = NewAppError("confirm password is wrong", "", notConfirmPassc, nil)
 	EmptyUsername  = NewAppError("emppty username", "", emptyUsername, nil)
+	EmptyPassword  = NewAppError("empty password", "", emptyPassword, nil)
+	UserNotFound   = NewAppError("user by username not fond", "", userNotFound, nil)
+	UserExists     = NewAppError("user already exists", "", userExists, nil)
 )
 
 func NewAppError(message, developerMessage, code string, err error) *AppError {
@@ -48,5 +55,5 @@ func (e *AppError) Marshal() []byte {
 }
 
 func systemError(err error) *AppError {
-	return NewAppError("internal system error", "API error", internalError, err)
+	return NewAppError("internal system error", "API error", InternalError, err)
 }

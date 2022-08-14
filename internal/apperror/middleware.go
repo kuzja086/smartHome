@@ -23,6 +23,10 @@ func Middleware(h apphandler) http.HandlerFunc {
 					w.WriteHeader(http.StatusBadRequest)
 					w.Write(EmptyUsername.Marshal())
 					return
+				} else if errors.Is(err, UserExists) {
+					w.WriteHeader(http.StatusConflict)
+					w.Write(UserExists.Marshal())
+					return
 				}
 
 				err = err.(*AppError)

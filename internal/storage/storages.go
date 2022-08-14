@@ -8,5 +8,5 @@ import (
 
 type UserStorage interface {
 	CreateUser(ctx context.Context, user entity.User) (string, error)
-	FindOne(ctx context.Context, id string) (entity.User, error)
+	FindByUsername(ctx context.Context, username string) (entity.User, error)
 }
