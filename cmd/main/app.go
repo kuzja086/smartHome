@@ -9,12 +9,12 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 
-	"smartHome/internal/config"
-	"smartHome/internal/service"
-	mongodbStorage "smartHome/internal/storage/db/mongodb"
-	v1user "smartHome/internal/transport/http/v1"
-	"smartHome/pkg/client/mongodb"
-	"smartHome/pkg/logging"
+	"github.com/kuzja086/smartHome/internal/config"
+	service "github.com/kuzja086/smartHome/internal/service/users"
+	mongodbStorage "github.com/kuzja086/smartHome/internal/storage/db/mongodb"
+	v1user "github.com/kuzja086/smartHome/internal/transport/http/v1/users"
+	"github.com/kuzja086/smartHome/pkg/client/mongodb"
+	"github.com/kuzja086/smartHome/pkg/logging"
 )
 
 func main() {

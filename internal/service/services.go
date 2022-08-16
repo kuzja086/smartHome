@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	"smartHome/internal/entity"
+	"github.com/kuzja086/smartHome/internal/entity"
 )
 
 type User interface {

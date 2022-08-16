@@ -1,7 +1,7 @@
 package entity
 
 import (
-	"smartHome/internal/apperror"
+	"github.com/kuzja086/smartHome/internal/apperror"
 
 	"golang.org/x/crypto/bcrypt"
 )

@@ -4,9 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"smartHome/internal/apperror"
-	"smartHome/internal/entity"
-	"smartHome/pkg/logging"
+
+	"github.com/kuzja086/smartHome/internal/apperror"
+	"github.com/kuzja086/smartHome/internal/entity"
+	"github.com/kuzja086/smartHome/pkg/logging"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

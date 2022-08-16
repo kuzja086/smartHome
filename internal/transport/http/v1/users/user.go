@@ -3,11 +3,12 @@ package v1user
 import (
 	"encoding/json"
 	"net/http"
-	"smartHome/internal/apperror"
-	"smartHome/internal/entity"
-	"smartHome/internal/service"
-	httpdto "smartHome/internal/transport/http/v1/dto"
-	"smartHome/pkg/logging"
+
+	"github.com/kuzja086/smartHome/internal/apperror"
+	"github.com/kuzja086/smartHome/internal/entity"
+	"github.com/kuzja086/smartHome/internal/service"
+	httpdto "github.com/kuzja086/smartHome/internal/transport/http/v1/dto"
+	"github.com/kuzja086/smartHome/pkg/logging"
 
 	"github.com/julienschmidt/httprouter"
 )

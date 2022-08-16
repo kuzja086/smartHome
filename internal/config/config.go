@@ -1,8 +1,9 @@
 package config
 
 import (
-	"smartHome/pkg/logging"
 	"sync"
+
+	"github.com/kuzja086/smartHome/pkg/logging"
 
 	"github.com/ilyakaznacheev/cleanenv"
 )

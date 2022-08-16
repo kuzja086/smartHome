@@ -3,10 +3,11 @@ package service
 import (
 	"context"
 	"errors"
-	"smartHome/internal/apperror"
-	"smartHome/internal/entity"
-	"smartHome/internal/storage"
-	"smartHome/pkg/logging"
+
+	"github.com/kuzja086/smartHome/internal/apperror"
+	"github.com/kuzja086/smartHome/internal/entity"
+	"github.com/kuzja086/smartHome/internal/storage"
+	"github.com/kuzja086/smartHome/pkg/logging"
 )
 
 type UserService struct {
