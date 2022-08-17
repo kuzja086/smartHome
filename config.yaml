@@ -1,0 +1,11 @@
+is_debug: true
+app:
+  host: localhost
+  port: 50194
+mongodb:
+  hostmdb: 192.168.1.187
+  portmdb: 27017
+  database: UserService
+  username: ks
+  password: ks
+  AuthDB: UserService
