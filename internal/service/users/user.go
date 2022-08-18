@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	"github.com/kuzja086/smartHome/internal/apperror"
-	"github.com/kuzja086/smartHome/internal/entity"
+	entity "github.com/kuzja086/smartHome/internal/entity/users"
 	"github.com/kuzja086/smartHome/internal/storage"
 	"github.com/kuzja086/smartHome/pkg/logging"
 )
@@ -37,7 +37,7 @@ func (u *UserService) CreateUser(ctx context.Context, dto entity.CreateUserDTO) 
 		return id, apperror.NewAppError("error with db", "", apperror.InternalError, err)
 	}
 
-	u.logger.Debug("generate password hash")
+	u.logger.Debug("create user")
 
 	id, err = u.storage.CreateUser(ctx, user)
 

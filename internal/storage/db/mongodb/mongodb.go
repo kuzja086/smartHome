@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/kuzja086/smartHome/internal/apperror"
-	"github.com/kuzja086/smartHome/internal/entity"
+	users "github.com/kuzja086/smartHome/internal/entity/users"
 	"github.com/kuzja086/smartHome/pkg/logging"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -26,7 +26,7 @@ func NewUserStorage(database *mongo.Database, collection string, logger *logging
 	}
 }
 
-func (d *UserStorage) CreateUser(ctx context.Context, user entity.User) (string, error) {
+func (d *UserStorage) CreateUser(ctx context.Context, user users.User) (string, error) {
 	d.logger.Debug("create user")
 	result, err := d.collection.InsertOne(ctx, user)
 	if err != nil {
@@ -43,7 +43,7 @@ func (d *UserStorage) CreateUser(ctx context.Context, user entity.User) (string,
 	return "", err
 }
 
-func (d *UserStorage) FindByUsername(ctx context.Context, username string) (u entity.User, err error) {
+func (d *UserStorage) FindByUsername(ctx context.Context, username string) (u users.User, err error) {
 	filter := bson.M{"username": username}
 
 	result := d.collection.FindOne(ctx, filter)

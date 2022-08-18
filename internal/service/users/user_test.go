@@ -5,7 +5,8 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	"github.com/kuzja086/smartHome/internal/entity"
+	"github.com/kuzja086/smartHome/internal/apperror"
+	entity "github.com/kuzja086/smartHome/internal/entity/users"
 	mock_storage "github.com/kuzja086/smartHome/internal/storage/mocks"
 	"github.com/kuzja086/smartHome/pkg/logging"
 	"github.com/stretchr/testify/require"
@@ -25,14 +26,11 @@ func TestCreateUser(t *testing.T) {
 		Email:          "test@test.ru",
 		RepeatPassword: "testPass",
 	}
-	mockResp := entity.User{
-		Username:     "testUser",
-		PasswordHash: "testPass",
-		Email:        "test@test.ru",
-	}
-	id := ""
 
-	repo.EXPECT().CreateUser(ctx, mockResp).Return(id, nil).Times(1)
+	id := "62f94cdc51e47edc761ab15b"
+
+	repo.EXPECT().FindByUsername(ctx, mockReq.Username).Return(entity.User{}, apperror.UserNotFound).Times(1)
+	repo.EXPECT().CreateUser(ctx, gomock.Any()).Return(id, nil).Times(1)
 
 	UseCase := NewUserService(logger, repo)
 	idExp, err := UseCase.CreateUser(ctx, mockReq)

@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/kuzja086/smartHome/internal/apperror"
-	"github.com/kuzja086/smartHome/internal/entity"
+	usersEntity "github.com/kuzja086/smartHome/internal/entity/users"
 	"github.com/kuzja086/smartHome/internal/service"
 	httpdto "github.com/kuzja086/smartHome/internal/transport/http/v1/dto"
 	"github.com/kuzja086/smartHome/pkg/logging"
@@ -48,7 +48,7 @@ func (h *UserHandler) SignUp(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	h.logger.Debug("Map DTO")
-	CreateUserDTO := entity.CreateUserDTO{
+	CreateUserDTO := usersEntity.CreateUserDTO{
 		Username:       d.Username,
 		Email:          d.Email,
 		Password:       d.Password,
@@ -59,8 +59,9 @@ func (h *UserHandler) SignUp(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
+	res := usersEntity.CreateUserResp{ID: id}
+	json.NewEncoder(w).Encode(res)
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(id))
 	return nil
 }
 
