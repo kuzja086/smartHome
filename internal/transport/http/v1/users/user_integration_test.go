@@ -72,3 +72,49 @@ func TestCreateUser(t *testing.T) {
 
 	require.Equal(t, expBody, string(data))
 }
+
+func TestAuthUser(t *testing.T) {
+	logger := logging.GetLogger()
+	ctx := context.Background()
+
+	ctl := gomock.NewController(t)
+	defer ctl.Finish()
+
+	repo := mock_storage.NewMockUserStorage(ctl)
+	mockReq := entity.AuthDTO{
+		Username: "testUser",
+		Password: "testPass",
+	}
+	id := "62f94cdc51e47edc761ab15b"
+	mockResp := entity.User{
+		ID:           id,
+		Username:     "testUser",
+		PasswordHash: "$2a$04$lmQ..8n/.jxq4uNVcrfUaO9A/b4q.xaS5OLwTmGU/55GB92b/0X22",
+	}
+
+	repo.EXPECT().FindByUsername(ctx, mockReq.Username).Return(mockResp, nil).Times(1)
+
+	userService := uservice.NewUserService(logger, repo)
+	h := v1user.NewUserHandler(logger, userService)
+	rec := httptest.NewRecorder()
+
+	req := httptest.NewRequest(
+		http.MethodPost,
+		"/auth/signin",
+		bytes.NewBuffer([]byte(
+			[]byte(`
+			{
+				"username": "testUser",
+				"password": "testPass"
+			}
+			`),
+		)),
+	)
+
+	h.SignIn(rec, req)
+
+	res := rec.Result()
+	fmt.Println(res)
+	require.Equal(t, 204, res.StatusCode)
+	require.Equal(t, rec.Result().Header.Get("Iddd"), id)
+}

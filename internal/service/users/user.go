@@ -48,7 +48,19 @@ func (u *UserService) CreateUser(ctx context.Context, dto entity.CreateUserDTO) 
 	return id, nil
 }
 
-func (u *UserService) FindByUsername(ctx context.Context, username string) (user entity.User, err error) {
-	// TODO
-	return user, nil
+func (u *UserService) Auth(ctx context.Context, dto entity.AuthDTO) (string, error) {
+	u.logger.Debug("Check user exists")
+	user, err := u.storage.FindByUsername(ctx, dto.Username)
+	if err != nil {
+		u.logger.Debug(err.Error())
+		return "", apperror.AuthFaild
+	}
+
+	errCheck := entity.CheckPassword(user.PasswordHash, dto.Password)
+	if errCheck != nil {
+		u.logger.Debug(err.Error())
+		return "", apperror.AuthFaild
+	}
+
+	return user.ID, nil
 }

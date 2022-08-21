@@ -27,6 +27,9 @@ func Middleware(h apphandler) http.HandlerFunc {
 					w.WriteHeader(http.StatusConflict)
 					w.Write(UserExists.Marshal())
 					return
+				} else if errors.Is(err, AuthFaild) {
+					w.WriteHeader(http.StatusUnauthorized)
+					return
 				}
 
 				err = err.(*AppError)

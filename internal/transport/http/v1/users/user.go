@@ -38,12 +38,13 @@ func (h *UserHandler) SignUp(w http.ResponseWriter, r *http.Request) error {
 	h.logger.Debug("Decode body")
 	if err := json.NewDecoder(r.Body).Decode(&d); err != nil {
 		h.logger.Debug([]byte(err.Error()))
-		apperror.NewAppError("Incorrect body", "", "", err)
+		return apperror.NewAppError("Incorrect body", "", "", err)
 	}
 
 	h.logger.Debug("Validate DTO")
-	err := h.validateRequest(d, h.logger)
+	err := h.validateCreateRequest(d)
 	if err != nil {
+		h.logger.Info(err.Error())
 		return err
 	}
 
@@ -66,22 +67,58 @@ func (h *UserHandler) SignUp(w http.ResponseWriter, r *http.Request) error {
 }
 
 func (h *UserHandler) SignIn(w http.ResponseWriter, r *http.Request) error {
-	return apperror.NewAppError("", "", "", nil)
+	h.logger.Info("Sign In")
+	var d httpdto.AuthDTO
+	defer r.Body.Close()
+
+	h.logger.Debug("Decode body")
+	if err := json.NewDecoder(r.Body).Decode(&d); err != nil {
+		h.logger.Debug(err.Error())
+		return apperror.NewAppError("Incorrect body", "", "", err)
+	}
+
+	h.logger.Debug("Validate AuthDTO")
+	err := h.validateAuthRequest(d)
+	if err != nil {
+		h.logger.Info(err.Error())
+		return err
+	}
+
+	h.logger.Debug("Map DTO")
+	AuthUserDTO := usersEntity.AuthDTO{
+		Username: d.Username,
+		Password: d.Password,
+	}
+
+	id, autherr := h.userService.Auth(r.Context(), AuthUserDTO)
+	if autherr != nil {
+		return autherr
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+	w.Header().Set("iddd", id)
+	h.logger.Info(w.Header())
+	return nil
 }
 
-func (h *UserHandler) validateRequest(req httpdto.CreateUserDTO, l *logging.Logger) error {
-	l.Debug("check password and confirm password")
+func (h *UserHandler) validateCreateRequest(req httpdto.CreateUserDTO) error {
 	if req.Password != req.RepeatPassword {
-		l.Info("reapeat pass wrong")
 		return apperror.NotConfirmPass
 	}
-	if req.Password == "" {
-		l.Info("empty password")
+
+	return checkFillUserPassword(req.Username, req.Password)
+}
+
+func (h *UserHandler) validateAuthRequest(req httpdto.AuthDTO) error {
+	return checkFillUserPassword(req.Username, req.Password)
+}
+
+func checkFillUserPassword(username, password string) error {
+	if password == "" {
 		return apperror.EmptyPassword
 	}
 
-	if req.Username == "" {
-		l.Info("empty username")
+	if username == "" {
 		return apperror.EmptyUsername
 	}
 	return nil

@@ -6,3 +6,8 @@ type CreateUserDTO struct {
 	Password       string `json:"password,omitempty"`
 	RepeatPassword string `json:"repeatpassword,omitempty"`
 }
+
+type AuthDTO struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}

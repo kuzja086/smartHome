@@ -24,6 +24,10 @@ type CreateUserResp struct {
 	ID string `json:"id"`
 }
 
+type AuthDTO struct {
+	Username, Password string
+}
+
 func NewUser(dto CreateUserDTO) (u User, err error) {
 	pwd, err := GeneratePasswordHash(dto.Password)
 	if err != nil {
@@ -43,4 +47,12 @@ func GeneratePasswordHash(password string) (string, error) {
 		return "", apperror.NewAppError("failed to hash", "failed to hash password due to error", apperror.HashGen, err)
 	}
 	return string(hash), nil
+}
+
+func CheckPassword(hash, password string) error {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	if err != nil {
+		return err
+	}
+	return nil
 }

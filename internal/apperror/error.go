@@ -18,6 +18,7 @@ const (
 	userNotFound    = "US-005"
 	userExists      = "US-006"
 	ErrorCreateUser = "US-007"
+	authFaild       = "US-008"
 )
 
 var (
@@ -26,6 +27,7 @@ var (
 	EmptyPassword  = NewAppError("empty password", "", emptyPassword, nil)
 	UserNotFound   = NewAppError("user by username not fond", "", userNotFound, nil)
 	UserExists     = NewAppError("user already exists", "", userExists, nil)
+	AuthFaild      = NewAppError("Auth is faild", "", authFaild, nil)
 )
 
 func NewAppError(message, developerMessage, code string, err error) *AppError {
