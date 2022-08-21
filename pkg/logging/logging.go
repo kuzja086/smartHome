@@ -64,7 +64,7 @@ func init() {
 		}
 	}
 
-	allfile, err := os.OpenFile("./logs/all.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0770)
+	allfile, err := os.OpenFile(".logs/all.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 	if err != nil {
 		panic(err)
 	}
