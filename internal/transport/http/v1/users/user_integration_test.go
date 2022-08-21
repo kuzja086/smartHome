@@ -114,7 +114,12 @@ func TestAuthUser(t *testing.T) {
 	h.SignIn(rec, req)
 
 	res := rec.Result()
-	fmt.Println(res)
-	require.Equal(t, 204, res.StatusCode)
-	require.Equal(t, rec.Result().Header.Get("Iddd"), id)
+	defer res.Body.Close()
+
+	require.Equal(t, 200, res.StatusCode)
+
+	data, err := ioutil.ReadAll(res.Body)
+	require.NoError(t, err)
+
+	require.Equal(t, string(data), id)
 }

@@ -95,9 +95,8 @@ func (h *UserHandler) SignIn(w http.ResponseWriter, r *http.Request) error {
 		return autherr
 	}
 
-	w.WriteHeader(http.StatusNoContent)
-	w.Header().Set("iddd", id)
-	h.logger.Info(w.Header())
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(id))
 	return nil
 }
 
