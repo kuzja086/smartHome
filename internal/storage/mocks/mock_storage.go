@@ -9,7 +9,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	entity "github.com/kuzja086/smartHome/internal/entity"
+	entity "github.com/kuzja086/smartHome/internal/entity/users"
 )
 
 // MockUserStorage is a mock of UserStorage interface.

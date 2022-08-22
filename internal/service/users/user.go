@@ -3,9 +3,10 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/kuzja086/smartHome/internal/apperror"
-	"github.com/kuzja086/smartHome/internal/entity"
+	entity "github.com/kuzja086/smartHome/internal/entity/users"
 	"github.com/kuzja086/smartHome/internal/storage"
 	"github.com/kuzja086/smartHome/pkg/logging"
 )
@@ -24,6 +25,7 @@ func NewUserService(logger *logging.Logger, storage storage.UserStorage) *UserSe
 
 func (u *UserService) CreateUser(ctx context.Context, dto entity.CreateUserDTO) (id string, err error) {
 	user, err := entity.NewUser(dto)
+	fmt.Println(user.PasswordHash)
 	if err != nil {
 		u.logger.Errorf("failed to create user due to error %v", err)
 		return id, err
@@ -37,7 +39,7 @@ func (u *UserService) CreateUser(ctx context.Context, dto entity.CreateUserDTO) 
 		return id, apperror.NewAppError("error with db", "", apperror.InternalError, err)
 	}
 
-	u.logger.Debug("generate password hash")
+	u.logger.Debug("create user")
 
 	id, err = u.storage.CreateUser(ctx, user)
 
@@ -48,7 +50,19 @@ func (u *UserService) CreateUser(ctx context.Context, dto entity.CreateUserDTO) 
 	return id, nil
 }
 
-func (u *UserService) FindByUsername(ctx context.Context, username string) (user entity.User, err error) {
-	// TODO
-	return user, nil
+func (u *UserService) Auth(ctx context.Context, dto entity.AuthDTO) (string, error) {
+	u.logger.Debug("Check user exists")
+	user, err := u.storage.FindByUsername(ctx, dto.Username)
+	if err != nil {
+		u.logger.Debug(err.Error())
+		return "", apperror.AuthFaild
+	}
+
+	errCheck := entity.CheckPassword(user.PasswordHash, dto.Password)
+	if errCheck != nil {
+		u.logger.Debug(errCheck.Error())
+		return "", apperror.AuthFaild
+	}
+
+	return user.ID, nil
 }

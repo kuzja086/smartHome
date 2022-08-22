@@ -20,8 +20,16 @@ type CreateUserDTO struct {
 	RepeatPassword string
 }
 
+type CreateUserResp struct {
+	ID string `json:"id"`
+}
+
+type AuthDTO struct {
+	Username, Password string
+}
+
 func NewUser(dto CreateUserDTO) (u User, err error) {
-	pwd, err := generatePasswordHash(dto.Password)
+	pwd, err := GeneratePasswordHash(dto.Password)
 	if err != nil {
 		return u, err
 	}
@@ -33,10 +41,18 @@ func NewUser(dto CreateUserDTO) (u User, err error) {
 	}, nil
 }
 
-func generatePasswordHash(password string) (string, error) {
+func GeneratePasswordHash(password string) (string, error) {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
 	if err != nil {
 		return "", apperror.NewAppError("failed to hash", "failed to hash password due to error", apperror.HashGen, err)
 	}
 	return string(hash), nil
+}
+
+func CheckPassword(hash, password string) error {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	if err != nil {
+		return err
+	}
+	return nil
 }

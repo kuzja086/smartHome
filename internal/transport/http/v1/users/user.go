@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/kuzja086/smartHome/internal/apperror"
-	"github.com/kuzja086/smartHome/internal/entity"
+	usersEntity "github.com/kuzja086/smartHome/internal/entity/users"
 	"github.com/kuzja086/smartHome/internal/service"
 	httpdto "github.com/kuzja086/smartHome/internal/transport/http/v1/dto"
 	"github.com/kuzja086/smartHome/pkg/logging"
@@ -38,17 +38,18 @@ func (h *UserHandler) SignUp(w http.ResponseWriter, r *http.Request) error {
 	h.logger.Debug("Decode body")
 	if err := json.NewDecoder(r.Body).Decode(&d); err != nil {
 		h.logger.Debug([]byte(err.Error()))
-		apperror.NewAppError("Incorrect body", "", "", err)
+		return apperror.NewAppError("Incorrect body", "", "", err)
 	}
 
 	h.logger.Debug("Validate DTO")
-	err := h.validateRequest(d, h.logger)
+	err := h.validateCreateRequest(d)
 	if err != nil {
+		h.logger.Info(err.Error())
 		return err
 	}
 
 	h.logger.Debug("Map DTO")
-	CreateUserDTO := entity.CreateUserDTO{
+	CreateUserDTO := usersEntity.CreateUserDTO{
 		Username:       d.Username,
 		Email:          d.Email,
 		Password:       d.Password,
@@ -59,28 +60,64 @@ func (h *UserHandler) SignUp(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
+	res := usersEntity.CreateUserResp{ID: id}
+	json.NewEncoder(w).Encode(res)
+	w.WriteHeader(http.StatusOK)
+	return nil
+}
+
+func (h *UserHandler) SignIn(w http.ResponseWriter, r *http.Request) error {
+	h.logger.Info("Sign In")
+	var d httpdto.AuthDTO
+	defer r.Body.Close()
+
+	h.logger.Debug("Decode body")
+	if err := json.NewDecoder(r.Body).Decode(&d); err != nil {
+		h.logger.Debug(err.Error())
+		return apperror.NewAppError("Incorrect body", "", "", err)
+	}
+
+	h.logger.Debug("Validate AuthDTO")
+	err := h.validateAuthRequest(d)
+	if err != nil {
+		h.logger.Info(err.Error())
+		return err
+	}
+
+	h.logger.Debug("Map DTO")
+	AuthUserDTO := usersEntity.AuthDTO{
+		Username: d.Username,
+		Password: d.Password,
+	}
+
+	id, autherr := h.userService.Auth(r.Context(), AuthUserDTO)
+	if autherr != nil {
+		return autherr
+	}
+
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(id))
 	return nil
 }
 
-func (h *UserHandler) SignIn(w http.ResponseWriter, r *http.Request) error {
-	return apperror.NewAppError("", "", "", nil)
-}
-
-func (h *UserHandler) validateRequest(req httpdto.CreateUserDTO, l *logging.Logger) error {
-	l.Debug("check password and confirm password")
+func (h *UserHandler) validateCreateRequest(req httpdto.CreateUserDTO) error {
 	if req.Password != req.RepeatPassword {
-		l.Info("reapeat pass wrong")
 		return apperror.NotConfirmPass
 	}
-	if req.Password == "" {
-		l.Info("empty password")
+
+	return checkFillUserPassword(req.Username, req.Password)
+}
+
+func (h *UserHandler) validateAuthRequest(req httpdto.AuthDTO) error {
+	return checkFillUserPassword(req.Username, req.Password)
+}
+
+func checkFillUserPassword(username, password string) error {
+	if password == "" {
 		return apperror.EmptyPassword
 	}
 
-	if req.Username == "" {
-		l.Info("empty username")
+	if username == "" {
 		return apperror.EmptyUsername
 	}
 	return nil
