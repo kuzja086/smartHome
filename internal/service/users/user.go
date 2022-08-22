@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/kuzja086/smartHome/internal/apperror"
 	entity "github.com/kuzja086/smartHome/internal/entity/users"
@@ -24,6 +25,7 @@ func NewUserService(logger *logging.Logger, storage storage.UserStorage) *UserSe
 
 func (u *UserService) CreateUser(ctx context.Context, dto entity.CreateUserDTO) (id string, err error) {
 	user, err := entity.NewUser(dto)
+	fmt.Println(user.PasswordHash)
 	if err != nil {
 		u.logger.Errorf("failed to create user due to error %v", err)
 		return id, err
@@ -58,7 +60,7 @@ func (u *UserService) Auth(ctx context.Context, dto entity.AuthDTO) (string, err
 
 	errCheck := entity.CheckPassword(user.PasswordHash, dto.Password)
 	if errCheck != nil {
-		u.logger.Debug(err.Error())
+		u.logger.Debug(errCheck.Error())
 		return "", apperror.AuthFaild
 	}
 
