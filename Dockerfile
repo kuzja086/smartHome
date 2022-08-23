@@ -16,7 +16,7 @@ RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 
 COPY --from=0 /github.com/kuzja086/smartHome/bin/app .
-COPY --from=0 /github.com/kuzja086/smartHome/pkg/config.yaml ./config.yaml
+COPY --from=0 /github.com/kuzja086/smartHome/config.yaml ./config.yaml
 
 EXPOSE 50194
 
