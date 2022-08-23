@@ -30,15 +30,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v1
+      - name: Docker Login
+        uses: docker/login-action@v2.0.0
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Publish to Registry
-        uses: docker/build-push-action@v2
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v3.1.1
         with:
           context: .
           push: true
-          tags: $(echo $REGISTRY)/$(echo $IMAGE_NAME):night
+          tags: night
