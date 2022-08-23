@@ -41,3 +41,21 @@ jobs:
           context: .
           push: true
           tags: kozs/smarthome:night
+  deploy:
+    needs: build
+    if: github.event_name == 'push'
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Docker Compose Action
+        uses: isbang/compose-action@v1.1.0
+        with:
+        # relative path to compose file
+        compose-file: # optional, default is ./docker-compose.yml
+        # additional options to pass to `docker-compose down` command
+        down-flags: # optional, default is
+        # services to perform docker-compose up
+        services: # optional
+        # additional options to pass to `docker-compose up` command
+        up-flags: # optional, default is
