@@ -56,6 +56,6 @@ jobs:
           # additional options to pass to `docker-compose down` command
           #down-flags: # optional, default is
           # services to perform docker-compose up
-        #services: # optional
-        # additional options to pass to `docker-compose up` command
-        up-flags: -d
+          #services: # optional
+          # additional options to pass to `docker-compose up` command
+          up-flags: -d
