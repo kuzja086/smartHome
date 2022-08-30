@@ -4,7 +4,7 @@ app:
   port: 50194
 mongodb:
   hostmdb: 192.168.1.187
-  portmdb: 27017
+  portmdb: 27018
   database: UserService
   username: ks
   password: ks
