@@ -51,11 +51,11 @@ jobs:
       - name: Docker Compose Action
         uses: isbang/compose-action@v1.1.0
         with:
-        # relative path to compose file
-        compose-file: ./docker-compose.yaml
-        # additional options to pass to `docker-compose down` command
-        #down-flags: # optional, default is
-        # services to perform docker-compose up
+          # relative path to compose file
+          compose-file: ./docker-compose.yaml
+          # additional options to pass to `docker-compose down` command
+          #down-flags: # optional, default is
+          # services to perform docker-compose up
         #services: # optional
         # additional options to pass to `docker-compose up` command
         up-flags: -d
