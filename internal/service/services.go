@@ -3,11 +3,10 @@ package service
 import (
 	"context"
 
-	"github.com/kuzja086/smartHome/internal/entity"
+	entityUsers "github.com/kuzja086/smartHome/internal/entity/users"
 )
 
 type User interface {
-	CreateUser(ctx context.Context, user entity.CreateUserDTO) (string, error)
-	FindByUsername(ctx context.Context, username string) (entity.User, error)
-	// FindOne(ctx context.Context, id string) (entity.User, error)
+	CreateUser(ctx context.Context, user entityUsers.CreateUserDTO) (string, error)
+	Auth(ctx context.Context, user entityUsers.AuthDTO) (string, error)
 }

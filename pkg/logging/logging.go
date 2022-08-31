@@ -58,13 +58,13 @@ func init() {
 	}
 
 	if _, err := os.Stat(logPath); errors.Is(err, os.ErrNotExist) {
-		err := os.Mkdir(logPath, 0644)
+		err := os.Mkdir(logPath, 0755)
 		if err != nil {
 			panic(err)
 		}
 	}
 
-	allfile, err := os.OpenFile("logs/all.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0640)
+	allfile, err := os.OpenFile("./logs/all.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0660)
 	if err != nil {
 		panic(err)
 	}
@@ -76,7 +76,7 @@ func init() {
 		LogLevels: logrus.AllLevels,
 	})
 
-	l.SetLevel(logrus.TraceLevel)
+	l.SetLevel(logrus.InfoLevel)
 
 	e = logrus.NewEntry(l)
 }
